@@ -26,7 +26,18 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+
 //add application routes...
+app.use((req, res, next) => {
+    if(req.session.user){
+        req.user = req.session.user;
+        
+    } else {
+        req.user = null;
+    }
+    
+    next();
+})
 
 //routers
 app.use("/", defaultRouter);
