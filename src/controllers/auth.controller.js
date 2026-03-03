@@ -1,4 +1,4 @@
-import { createUser, findUserByUsername } from "../services/user.service.js";
+import { createUser, findUserByUsername, validatePassword } from "../services/user.service.js";
 
 const loginPage = (req, res) => {
     res.render("login", {
@@ -32,13 +32,31 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+
     const { username, password } = req.body;
+    if (!username || !password) {
+        return res.redirect("/login?errors=All fields required");
+    }
 
     const user = await findUserByUsername(username);
+    if (!user) {
+        return res.redirect("/login?errors=Invaild credentials");
+    }
 
-    if (!user || user.password !== password) {
+    const isValid = await validatePassword(password, user.password);
+    if (!isValid) {
         return res.redirect("/login?errors=Invalid credentials");
     }
+
+    req.session.user = {
+        userId: user.userId,
+        username: user.username,
+        role: user.role,
+    }
+
+    // if (!user || user.password !== password) {
+    //     return res.redirect("/login?errors=Invalid credentials");
+    // }
 
     res.redirect("/dashboard");
 };
