@@ -77,4 +77,10 @@ export const hasRole = (role) => {
     };
 };
 
+export const logout = (req, res) => {
+    req.session.destroy(() => {
+        return res.redirect("/login");
+    })
+}
+
 export default { loginPage, registerPage, register, login, isLoggedIn, hasRole };
