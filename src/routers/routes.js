@@ -12,7 +12,7 @@ router.post("/login", authCtl.login);
 router.get("/register", authCtl.registerPage);
 router.post("/register", authCtl.register);
 
-router.get("/dashboard", pageCtl.dashboardPage);
-router.get("/admin", pageCtl.adminPage);
+router.get("/dashboard", authCtl.isLoggedIn, pageCtl.dashboardPage);
+router.get("/admin", authCtl.isLoggedIn, authCtl.hasRole("admin"), pageCtl.adminPage);
 
 export default router;
